@@ -1,9 +1,9 @@
-defmodule Malamute.MixProject do
+defmodule ADA.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :malamute,
+      app: :ada,
       version: "0.1.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
@@ -17,13 +17,14 @@ defmodule Malamute.MixProject do
       extra_applications: [
         :logger,
         :ex_twilio,
-        :ex_twiml,
         :plug_cowboy,
         :poison,
+        :httpoison,
+        :cachex,
         :bamboo,
         :bamboo_smtp
       ],
-      mod: {Malamute.Application, []}
+      mod: {ADA.Application, []}
     ]
   end
 
@@ -31,9 +32,10 @@ defmodule Malamute.MixProject do
   defp deps do
     [
       {:ex_twilio, "~> 0.9.1"},
-      {:ex_twiml, "~> 2.1"},
       {:plug_cowboy, "~> 2.5"},
       {:poison, "~> 5.0"},
+      {:httpoison, "~> 1.8"},
+      {:cachex, "~> 3.4"},
       {:bamboo, "~> 2.2"},
       {:bamboo_smtp, "~> 4.2"}
     ]

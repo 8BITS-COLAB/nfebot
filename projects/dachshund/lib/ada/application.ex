@@ -1,4 +1,4 @@
-defmodule Malamute.Application do
+defmodule ADA.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -8,15 +8,14 @@ defmodule Malamute.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      Malamute.SMS.Supervisor,
-      Malamute.Whatsapp.Supervisor,
-      Malamute.Email.Supervisor,
-      {Plug.Cowboy, plug: DachshundWeb.Endpoint, scheme: :http, options: [port: 4000]}
+      {Task.Supervisor, name: :ada},
+      {Cachex, name: :context},
+      {Plug.Cowboy, plug: ADAWeb.Endpoint, scheme: :http, options: [port: 3001]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Malamute.Supervisor]
+    opts = [strategy: :one_for_one, name: ADA.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

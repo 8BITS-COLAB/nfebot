@@ -1,8 +1,8 @@
-defmodule DachshundTest do
+defmodule ADATest do
   use ExUnit.Case
-  doctest Malamute
+  doctest ADA
 
   test "greets the world" do
-    assert Malamute.hello() == :world
+    assert ADA.hello() == :world
   end
 end

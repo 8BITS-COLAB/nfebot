@@ -1,0 +1,2 @@
+defmodule ADA do
+end
