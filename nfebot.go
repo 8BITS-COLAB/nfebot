@@ -3,7 +3,6 @@ package nfebot
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"time"
 
@@ -22,7 +21,7 @@ func New(takePhotoOfNote bool) *NFEBot {
 	}
 }
 
-func (n *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) (string, error) {
+func (n *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) ([]byte, error) {
 	ctx, cancel := chromedp.NewContext(
 		context.Background(),
 		chromedp.WithLogf(log.Printf),
@@ -59,13 +58,12 @@ func (n *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) (string, error) {
 		chromedp.Sleep(time.Second),
 		chromedp.FullScreenshot(&buf, 100),
 	); err != nil {
-		return "", err
+		return nil, err
 	}
 
 	if n.TakePhotoOfNote {
-		filename := fmt.Sprintf("%d.png", time.Now().Unix())
-		return filename, ioutil.WriteFile(filename, buf, 0o644)
+		return buf, nil
 	}
 
-	return "", nil
+	return nil, nil
 }
