@@ -69,10 +69,6 @@ func (bot *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) ([]byte, error) {
 func (bot *NFEBot) WithRetries(retries int, issueNFEDTO IssueNFEDTO) ([]byte, error) {
 	image, err := bot.IssueNFE(issueNFEDTO)
 
-	if err != nil {
-		return nil, err
-	}
-
 	if retries > 0 {
 		if err != nil {
 			return bot.WithRetries(retries-1, issueNFEDTO)
