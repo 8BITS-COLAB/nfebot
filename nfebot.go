@@ -22,7 +22,7 @@ func New(takePhotoOfNote bool) *NFEBot {
 	}
 }
 
-func (n *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) error {
+func (n *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) (string, error) {
 	ctx, cancel := chromedp.NewContext(
 		context.Background(),
 		chromedp.WithLogf(log.Printf),
@@ -59,13 +59,13 @@ func (n *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) error {
 		chromedp.Sleep(time.Second),
 		chromedp.FullScreenshot(&buf, 100),
 	); err != nil {
-		return err
+		return "", err
 	}
 
 	if n.TakePhotoOfNote {
 		filename := fmt.Sprintf("%d", time.Now().Unix())
-		return ioutil.WriteFile(filename, buf, 0o644)
+		return filename, ioutil.WriteFile(filename, buf, 0o644)
 	}
 
-	return nil
+	return "", nil
 }
