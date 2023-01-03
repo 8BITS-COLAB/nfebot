@@ -25,6 +25,10 @@ func (n *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) ([]byte, error) {
 		chromedp.WithLogf(log.Printf),
 	)
 	defer cancel()
+
+	ctx, cancel = context.WithTimeout(ctx, time.Second*5)
+	defer cancel()
+
 	var buf []byte
 
 	if err := chromedp.Run(
