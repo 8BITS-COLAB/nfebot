@@ -19,7 +19,7 @@ func New() *NFEBot {
 	}
 }
 
-func (n *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) ([]byte, error) {
+func (bot *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) ([]byte, error) {
 	ctx, cancel := chromedp.NewContext(
 		context.Background(),
 		chromedp.WithLogf(log.Printf),
@@ -33,7 +33,7 @@ func (n *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) ([]byte, error) {
 
 	if err := chromedp.Run(
 		ctx,
-		chromedp.Navigate(n.URL),
+		chromedp.Navigate(bot.URL),
 		chromedp.WaitVisible(LoginInputElement),
 		chromedp.SetValue(LoginInputElement, issueNFEDTO.Employee.Login),
 		chromedp.SetValue(PasswordInputElement, issueNFEDTO.Employee.Password),
@@ -64,4 +64,20 @@ func (n *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) ([]byte, error) {
 	}
 
 	return buf, nil
+}
+
+func (bot *NFEBot) WithRetries(retries int, issueNFEDTO IssueNFEDTO) ([]byte, error) {
+	image, err := bot.IssueNFE(issueNFEDTO)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if retries > 0 {
+		if err != nil {
+			return bot.WithRetries(retries-1, issueNFEDTO)
+		}
+	}
+
+	return image, nil
 }
