@@ -3,7 +3,6 @@ package nfebot
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"time"
 
@@ -11,18 +10,16 @@ import (
 )
 
 type NFEBot struct {
-	URL             string
-	TakePhotoOfNote bool
+	URL string
 }
 
-func New(takePhotoOfNote bool) *NFEBot {
+func New() *NFEBot {
 	return &NFEBot{
-		URL:             "http://sefa.serra.es.gov.br:8080/tbw/loginNFEContribuinte.jsp?execobj=NFERelacionados",
-		TakePhotoOfNote: takePhotoOfNote,
+		URL: "http://sefa.serra.es.gov.br:8080/tbw/loginNFEContribuinte.jsp?execobj=NFERelacionados",
 	}
 }
 
-func (n *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) (string, error) {
+func (n *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) ([]byte, error) {
 	ctx, cancel := chromedp.NewContext(
 		context.Background(),
 		chromedp.WithLogf(log.Printf),
@@ -59,13 +56,8 @@ func (n *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) (string, error) {
 		chromedp.Sleep(time.Second),
 		chromedp.FullScreenshot(&buf, 100),
 	); err != nil {
-		return "", err
+		return nil, err
 	}
 
-	if n.TakePhotoOfNote {
-		filename := fmt.Sprintf("%d.png", time.Now().Unix())
-		return filename, ioutil.WriteFile(filename, buf, 0o644)
-	}
-
-	return "", nil
+	return buf, nil
 }
