@@ -10,9 +10,19 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-const url = "http://sefa.serra.es.gov.br:8080/tbw/loginNFEContribuinte.jsp?execobj=NFERelacionados"
+type NFEBot struct {
+	URL             string
+	TakePhotoOfNote bool
+}
 
-func IssueNFE(issueNFEDTO IssueNFEDTO) error {
+func New(takePhotoOfNote bool) *NFEBot {
+	return &NFEBot{
+		URL:             "http://sefa.serra.es.gov.br:8080/tbw/loginNFEContribuinte.jsp?execobj=NFERelacionados",
+		TakePhotoOfNote: takePhotoOfNote,
+	}
+}
+
+func (n *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) error {
 	ctx, cancel := chromedp.NewContext(
 		context.Background(),
 		chromedp.WithLogf(log.Printf),
@@ -22,7 +32,7 @@ func IssueNFE(issueNFEDTO IssueNFEDTO) error {
 
 	if err := chromedp.Run(
 		ctx,
-		chromedp.Navigate(url),
+		chromedp.Navigate(n.URL),
 		chromedp.WaitVisible(LoginInputElement),
 		chromedp.SetValue(LoginInputElement, issueNFEDTO.Employee.Login),
 		chromedp.SetValue(PasswordInputElement, issueNFEDTO.Employee.Password),
@@ -52,5 +62,10 @@ func IssueNFE(issueNFEDTO IssueNFEDTO) error {
 		return err
 	}
 
-	return ioutil.WriteFile("screenshot.png", buf, 0o644)
+	if n.TakePhotoOfNote {
+		filename := fmt.Sprintf("%d", time.Now().Unix())
+		return ioutil.WriteFile(filename, buf, 0o644)
+	}
+
+	return nil
 }
