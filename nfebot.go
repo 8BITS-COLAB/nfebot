@@ -30,7 +30,6 @@ func (bot *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) ([]byte, error) {
 	defer cancel()
 
 	var buf []byte
-
 	if err := chromedp.Run(
 		ctx,
 		chromedp.Navigate(bot.URL),
@@ -57,7 +56,7 @@ func (bot *NFEBot) IssueNFE(issueNFEDTO IssueNFEDTO) ([]byte, error) {
 		chromedp.SetValue(NFEUnitValueInputElement, fmt.Sprintf("%d", issueNFEDTO.NFE.UnitValue)),
 		chromedp.SetValue(NFETotalValueInputElement, fmt.Sprintf("%d", issueNFEDTO.NFE.UnitValue)),
 		chromedp.Click(NFEAddButtonElement),
-		chromedp.Sleep(time.Second),
+		chromedp.Sleep(time.Millisecond*100),
 		chromedp.FullScreenshot(&buf, 100),
 	); err != nil {
 		return nil, err

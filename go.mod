@@ -1,4 +1,4 @@
-module github.com/8BITS-COLAB/nfebot/v2
+module github.com/8BITS-COLAB/nfebot/v3
 
 go 1.18
 
